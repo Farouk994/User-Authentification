@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path")
 const mysql = require("mysql");
 const dotenv = require("dotenv")
 
@@ -15,6 +16,12 @@ const db = mysql.createConnection({
     database : "nodejs-login"
 });
 
+
+// this is a variable that gives you access of currrent directory
+const publicDirectory = path.join(__dirname, './public');
+app.use(express.static(publicDirectory));
+app.set('view engine', 'exphbs');
+
 db.connect( (error)=> {
     if(error) {
         console.log(error)
@@ -24,7 +31,8 @@ db.connect( (error)=> {
 });
 
 app.get("/diane", function(req,res){
-    res.send("<h1>Welcome to 3ller</h1>");
+    // res.send("<h1>Welcome to 3ller</h1>");
+    res.render(" index ")
 });
 
 const PORT = process.env.PORT || 3000;
