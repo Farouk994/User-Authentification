@@ -1,12 +1,15 @@
 const express = require("express");
-const path = require("path")
+const path = require("path");
+var exphbs = require("express-handlebars");
 const mysql = require("mysql");
 const dotenv = require("dotenv")
+const app = express();
 
 dotenv.config({ path: './.env'});
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 
-const app = express();
 
 const db = mysql.createConnection({
     host : "localhost",
@@ -16,12 +19,6 @@ const db = mysql.createConnection({
     database : "nodejs-login"
 });
 
-
-// this is a variable that gives you access of currrent directory
-const publicDirectory = path.join(__dirname, './public');
-app.use(express.static(publicDirectory));
-app.set('view engine', 'exphbs');
-
 db.connect( (error)=> {
     if(error) {
         console.log(error)
@@ -30,10 +27,21 @@ db.connect( (error)=> {
     } 
 });
 
-app.get("/diane", function(req,res){
-    // res.send("<h1>Welcome to 3ller</h1>");
-    res.render(" index ")
+// this is a variable that gives you access of currrent directory
+const publicDirectory = path.join(__dirname, './public');
+app.use(express.static(publicDirectory));
+
+app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+app.set("view engine", "handlebars");
+
+app.get("/signup", function(req,res){
+    res.sendFile(path.join(__dirname, "./public/signup.html"));
 });
+
+app.get("/login", function(req,res){
+    res.sendFile(path.join(__dirname, "./public/login.html"));
+});
+
 
 const PORT = process.env.PORT || 3000;
 
