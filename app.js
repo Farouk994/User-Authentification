@@ -1,15 +1,10 @@
 const express = require("express");
 const path = require("path");
-var exphbs = require("express-handlebars");
 const mysql = require("mysql");
-const dotenv = require("dotenv")
 const app = express();
 
-dotenv.config({ path: './.env'});
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
-
 
 const db = mysql.createConnection({
     host : "localhost",
@@ -31,17 +26,9 @@ db.connect( (error)=> {
 const publicDirectory = path.join(__dirname, './public');
 app.use(express.static(publicDirectory));
 
-app.engine("handlebars", exphbs({ defaultLayout: "main" }));
-app.set("view engine", "handlebars");
-
-app.get("/signup", function(req,res){
-    res.sendFile(path.join(__dirname, "./public/signup.html"));
-});
-
-app.get("/login", function(req,res){
-    res.sendFile(path.join(__dirname, "./public/login.html"));
-});
-
+// Routes for html page
+require("./routes/pages")(app);
+require("./routes/pages")(app);
 
 const PORT = process.env.PORT || 3000;
 
